@@ -1,0 +1,189 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+'''
+@Project ：ie_e2e 
+@File    ：ephoie_default_dp02_lr2e4_epoch600_pretrain_1032_kjf.py
+@IDE     ：PyCharm 
+@Author  ：jfkuang
+@Date    ：2022/6/15 10:13 
+'''
+
+
+
+from configs._base_.det_models.ocr_mask_rcnn_r50_fpn_ohem import model as det
+# Be aware, the num_classes in ocr_mask_rcnn_r50_fpn_ohem_poly is set to 80, which is incorrect
+# for ocr tasks.
+
+_base_ = [
+    '../../_base_/ocr_datasets/local/ephoie_local_1032_kjf.py',
+    '../../_base_/e2e_pipelines/ocr_pretrain_pipeline_aug_1280_1032_kjf.py'
+]
+
+det_module = det.copy()
+det_module['type'] = 'ReI_OCRMaskRCNN'
+det_module['roi_head']['type'] = 'ReI_StandardRoIHead'
+det_module['test_cfg'].update(sort_test=True)
+
+# ------------ model setting ------------
+model = dict(
+    type='TwoStageSpotter',
+    det_head=det_module,
+    neck=dict(
+        feature_fuser=dict(
+            feat_num_in=4, in_channels=256, out_channels=512, sum_up=True,
+        ),
+        roi_extractor=dict(
+            type='SingleRoIExtractor',
+            roi_layer=dict(type='RoIAlign', output_size=(10, 40), sampling_ratio=0),
+            out_channels=512,
+            featmap_strides=[4, ]),
+        spatial_embedding=dict(
+            embedding_dim=512,
+        ),
+        use_mask_align=False
+    ),
+    ext_head=dict(
+        type='AutoRegReader',
+        rec_cfg=dict(
+            text_encoder_args=dict(
+                type='none',
+                input_dim=512,
+            ),
+            d_model=512,
+            fusion_pe_args=dict(
+                n_position=200,
+            ),
+            node_attn_cfg=dict(
+                type='origin',
+                use_layout_node=False,
+                use_context_node=False,
+                nhead=8,
+                dim_feedforward=512,
+                dropout=0.1,
+            ),
+            node_attn_layers=4,
+            rec_pe_args=dict(
+                n_position=1000,
+            ),
+            feat_pe_args=dict(
+                dropout=0.1,
+                n_position=1000
+            ),
+            rec_decoder_args=dict(
+                self_attn=dict(
+                    headers=8,
+                    d_model=512,
+                    dropout=0.2),
+                src_attn=dict(
+                    headers=8,
+                    d_model=512,
+                    dropout=0.2),
+                feed_forward=dict(
+                    d_model=512,
+                    d_ff=2024,
+                    dropout=0.2),
+                size=512,
+                dropout=0.2),
+            rec_layer_num=4,
+            rec_dual_layer_num=1,
+            # max_seq_len here includes both SOS and EOS
+            max_seq_len=72,
+            crf_args={}
+        ),
+        loss=dict(
+            type='MASTERTFLoss',
+            ocr_ignore_index=2,
+            kie_ignore_index=1,
+            reduction='mean',
+            rec_weights=10.0,
+            kie_weights=10.0
+        ),
+        use_ins_mask=False,
+        rec_only=True,
+        train_cfg=None,
+        test_cfg=None,
+        init_cfg=None,
+        query_cfg=dict(
+            query_type='BOTH',
+            ocr_weight=0.5,
+            kie_weight=0.5,
+            forward_manner='PARALLEL'),
+        ),
+    vis_cfg=dict(
+        show_score=False,
+        show_bbox=True,
+        show_text=True,
+        show_entity=False,
+        dict_file='/home/jfkuang/data/ephoie_e2e_format/e2e_format/dict.json',
+        class_file='/home/jfkuang/data/ephoie_e2e_format/e2e_format/class_list.json',
+        auto_reg=True
+    ),
+    pretrain=None,
+    init_cfg=None,
+    train_cfg=dict(use_det_res=True,max_ins_num_per_img=80),
+    test_cfg=None,
+    part_pretrain=None,
+    model_type='OCR')
+model['ext_head']['ocr_dict_file'] = model['vis_cfg']['dict_file']
+model['ext_head']['kie_dict_file'] = model['vis_cfg']['class_file']
+
+
+train_list = {{_base_.train_list}}
+test_list = {{_base_.test_list}}
+# test_list = {{_base_.train_list}}
+
+train_pipeline = {{_base_.train_pipeline}}
+test_pipeline = {{_base_.test_pipeline}}
+
+# ------------ data preparation ------------
+data = dict(
+    samples_per_gpu=1,
+    workers_per_gpu=2,
+    val_dataloader=dict(samples_per_gpu=1, workers_per_gpu=2),
+    test_dataloader=dict(samples_per_gpu=1, workers_per_gpu=2),
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=train_list,
+        pipeline=train_pipeline),
+    val=dict(
+        type='UniformConcatDataset',
+        datasets=test_list,
+        pipeline=test_pipeline),
+    test=dict(
+        type='UniformConcatDataset',
+        datasets=test_list,
+        pipeline=test_pipeline))
+
+# additional parameter of evaluation setting.
+#   interval: the interval of evaluation.
+#   metric: which is specified in dataset class.
+evaluation = dict(interval=20, metric='e2e-hmean-sroie')
+
+# ------------ optimizer & scheduler ------------
+# optimizer
+optimizer = dict(type='Adam', lr=2e-4)
+optimizer_config = dict(grad_clip=None)
+# learning policy
+lr_config = dict(policy='step', step=[200, 400])
+total_epochs = 400
+
+
+# ------------ run time & logging ------------
+checkpoint_config = dict(interval=20)
+# yapf:disable
+log_config = dict(
+    interval=20,
+    hooks=[
+        dict(type='TextLoggerHook')
+        # dict(type='TensorboardLoggerHook')
+    ])
+# yapf:enable
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = '/home/jfkuang/code/ie_e2e/pretrained_models/epoch_25.pth'
+# load_from = None
+resume_from = None
+workflow = [('train', 1)]
+
+find_unused_parameters = True
+# fp16 = dict(loss_scale='dynamic')

@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Time : 2022/2/2 22:53
+# @Author : WeiHua
+
+dataset_type = 'VIEE2EDataset'
+data_root = '/home/whua/datasets/ie_e2e_format/sroie/e2e_format'
+data_root_synth_text = '/share/xdxie/text_datasets/datasets/synthtext/SynthText'
+# data_root = '/data/whua/dataset/ie_e2e/nfv1/ie_e2e_data/mm_format/table'
+# data_root = '/mnt/whua/ie_e2e_data/mm_format/table'
+
+loader = dict(
+    type='HardDiskLoader',
+    repeat=1,
+    parser=dict(
+        type='CustomLineJsonParser',
+        keys=['file_name', 'height', 'width', 'annotations'],
+        optional_keys=['entity_dict']))
+
+train = dict(
+    type=dataset_type,
+    ann_file=f'{data_root}/train_update.txt',
+    loader=loader,
+    dict_file=f'{data_root}/dict.json',
+    img_prefix=data_root,
+    pipeline=None,
+    test_mode=False,
+    class_file=f'{data_root}/class_list.json',
+    data_type='ocr',
+    max_seq_len=72,
+    order_type='shuffle',
+    auto_reg=True,
+    pre_parse_anno=True)
+
+train_synth_text = dict(
+    type=dataset_type,
+    ann_file=f'/share/whua/dataset/SynthText/train.txt',
+    loader=loader,
+    dict_file=f'{data_root}/dict.json',
+    img_prefix=data_root_synth_text,
+    pipeline=None,
+    test_mode=False,
+    class_file=f'{data_root}/class_list.json',
+    data_type='ocr',
+    max_seq_len=72,
+    order_type='shuffle',
+    auto_reg=True,
+    specify_num=626,
+)
+
+test = dict(
+    type=dataset_type,
+    ann_file=f'{data_root}/test.txt',
+    loader=loader,
+    dict_file=f'{data_root}/dict.json',
+    img_prefix=data_root,
+    pipeline=None,
+    test_mode=True,
+    class_file=f'{data_root}/class_list.json',
+    data_type='ocr',
+    max_seq_len=72,
+    order_type='origin',
+    auto_reg=True)
+
+train_list = [train, train_synth_text]
+
+test_list = [test]

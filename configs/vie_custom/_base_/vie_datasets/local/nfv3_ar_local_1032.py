@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Time : 2022/2/2 22:53
+# @Author : WeiHua
+
+dataset_type = 'VIEE2EDataset'
+data_root = '/home/whua/datasets/ie_e2e_format/nfv3'
+# data_root = '/data/whua/dataset/ie_e2e/nfv1/ie_e2e_data/mm_format/table'
+# data_root = '/mnt/whua/ie_e2e_data/mm_format/table'
+
+loader = dict(
+    type='HardDiskLoader',
+    repeat=1,
+    parser=dict(
+        type='CustomLineJsonParser',
+        keys=['file_name', 'height', 'width', 'annotations'],))
+
+train = dict(
+    type=dataset_type,
+    ann_file=f'{data_root}/train.txt',
+    loader=loader,
+    dict_file=f'{data_root}/dict.json',
+    img_prefix=data_root,
+    pipeline=None,
+    test_mode=False,
+    class_file=f'{data_root}/class_list.json',
+    data_type='vie',
+    max_seq_len=125,
+    order_type='shuffle',
+    auto_reg=True)
+
+test = dict(
+    type=dataset_type,
+    # ann_file=f'{data_root}/test.txt',
+    # ann_file=f'{data_root}/test_split_google.txt',
+    # ann_file=f'{data_root}/test_split_nf.txt',
+    ann_file=f'{data_root}/test_split_openfood.txt',
+    loader=loader,
+    dict_file=f'{data_root}/dict.json',
+    img_prefix=data_root,
+    pipeline=None,
+    test_mode=True,
+    class_file=f'{data_root}/class_list.json',
+    data_type='vie',
+    max_seq_len=125,
+    order_type='origin',
+    auto_reg=True)
+
+train_list = [train]
+
+test_list = [test]

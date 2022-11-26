@@ -1,0 +1,10 @@
+ipdb               0.13.9
+mmcv-full          1.4.2
+mmdet              2.19.1
+mmocr              0.4.0       /home/whua/code/ie_e2e
+opencv-python      4.5.5.62
+timm               0.4.5
+torch              1.7.1+cu92
+torchaudio         0.7.2
+torchvision        0.8.2+cu92
+tqdm               4.62.3

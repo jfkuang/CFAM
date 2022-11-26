@@ -1,0 +1,9 @@
+ipdb                               0.13.9
+mmcv-full                          1.3.8
+mmdet                              2.14.0
+mmocr                              0.4.0               /apdcephfs/share_887471/common/whua/code/ie_e2e
+opencv-python                      4.5.4.60
+timm                               0.4.5
+torch                              1.7.0+cu101
+torchvision                        0.8.0
+tqdm                               4.50.0
