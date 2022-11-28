@@ -2,19 +2,18 @@
 # -*- coding: UTF-8 -*-
 '''
 @Project ：ie_e2e 
-@File    ：nfv5_3125_sdef_kvc_cross_attention_200e_720.py
+@File    ：Ours.py
 @IDE     ：PyCharm 
 @Author  ：jfkuang
-@Date    ：2022/10/15 21:06 
+@Date    ：2022/11/28 17:13 
 '''
-
 from configs._base_.det_models.ocr_mask_rcnn_r50_fpn_ohem import model as det
 # Be aware, the num_classes in ocr_mask_rcnn_r50_fpn_ohem_poly is set to 80, which is incorrect
 # for ocr tasks.
 
 _base_ = [
-    '../_base_/nfv5_3125_ar_local.py',
-    '../_base_/vie_manner_pipeline_aug_720.py'
+    '../../../_base_/vie_datasets/nfv5_3125_ar_local_1032.py',
+    '../../../_base_/e2e_pipelines/vie_manner_pipeline_aug_720.py'
 ]
 
 det_module = det.copy()
@@ -22,7 +21,6 @@ det_module['type'] = 'ReI_OCRMaskRCNN'
 det_module['roi_head']['type'] = 'ReI_StandardRoIHead'
 det_module['test_cfg'].update(sort_test=True)
 
-code_root = '/root/paddlejob/workspace/env_run/dkliang/projects/synchronous/V100_4/ie_e2e-newtest'
 # ------------ model setting ------------
 model = dict(
     type='TwoStageSpotter',
@@ -88,7 +86,6 @@ model = dict(
             # max_seq_len here includes both SOS and EOS
             max_seq_len=125,
             crf_args=dict(
-                use_kie_loss=True,
                 lstm_args=dict(
                     bilstm_kwargs=dict(
                         input_size=-1,
@@ -113,11 +110,11 @@ model = dict(
                     kvc_feat_type='E',
                     use_context_encoder=True,
                     use_texture_encoder=True,
-                    use_context_embedding=False,
-                    use_texture_embedding=False,
+                    use_context_embedding=True,
+                    use_texture_embedding=True,
                     kvc_weights=10.0,
                     add_decoder=False,
-                    kvc_type='cross_attention1'
+                    kvc_type='matrix'
                 )
             )
         ),
@@ -126,7 +123,7 @@ model = dict(
             ocr_ignore_index=2,
             kie_ignore_index=1,
             reduction='mean',
-            rec_weights=10.0,
+            rec_weights=1.0,
             kie_weights=10.0,
             crf_weights=10.0
         ),
@@ -146,8 +143,8 @@ model = dict(
         show_bbox=True,
         show_text=True,
         show_entity=True,
-        dict_file=f'{code_root}/ie_e2e_dataset/nfv5_3125/dict.json',
-        class_file=f'{code_root}/ie_e2e_dataset/nfv5_3125/class_list.json',
+        dict_file='/home/whua/dataset/ie_e2e_dataset/nfv5_3125/dict.json',
+        class_file='/home/whua/dataset/ie_e2e_dataset/nfv5_3125/class_list.json',
         auto_reg=True
     ),
     pretrain=None,
@@ -169,7 +166,7 @@ test_pipeline = {{_base_.test_pipeline}}
 # ------------ data preparation ------------
 data = dict(
     samples_per_gpu=1,
-    workers_per_gpu=1,
+    workers_per_gpu=2,
     val_dataloader=dict(samples_per_gpu=1, workers_per_gpu=2),
     test_dataloader=dict(samples_per_gpu=1, workers_per_gpu=2),
     train=dict(
@@ -212,7 +209,7 @@ log_config = dict(
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 # load_from = '/apdcephfs/share_887471/common/whua/logs/ie_e2e_log/ocr_pretrain/latest.pth'
-load_from = f"{code_root}/ie_e2e_weights/ocr_pretrain_eng_full_default_dp02_rc_rr_cj_blsh_lr4e4_dpp02_epoch_6.pth"
+load_from = '/home/whua/logs/ie_e2e_weights/ocr_pretrain_eng_full_default_dp02_rc_rr_cj_blsh_lr4e4_dpp02_epoch_6.pth'
 resume_from = None
 workflow = [('train', 1)]
 

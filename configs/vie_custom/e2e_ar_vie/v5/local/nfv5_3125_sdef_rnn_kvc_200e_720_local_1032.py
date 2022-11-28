@@ -117,7 +117,7 @@ model = dict(
                     use_texture_embedding=False,
                     kvc_weights=10.0,
                     add_decoder=True,
-                    kvc_type='self_attention'
+                    kvc_type='matrix'
                 )
             )
         ),
