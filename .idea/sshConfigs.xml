@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="222.20.96.216" id="a210a797-b3a6-4edc-a806-707586b4c778" keyPath="C:\Users\jfkuang\.ssh\vlrlab" port="1803" nameFormat="DESCRIPTIVE" username="jfkuang" useOpenSSHConfig="true" />
+      <sshConfig host="222.20.94.235" id="e768c873-bc99-4f28-86e7-9f7594f4cf03" keyPath="C:\Users\jfkuang\.ssh\vlrlab" port="1062" nameFormat="DESCRIPTIVE" username="jfkuang" useOpenSSHConfig="true" />
+      <sshConfig authType="PASSWORD" host="123.125.240.158" id="0a8c405a-93b3-4115-95c9-307d90416673" port="22" nameFormat="DESCRIPTIVE" username="jfkuang" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>

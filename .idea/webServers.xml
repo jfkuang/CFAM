@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="44eb179b-f506-4166-b49a-c1c849d10244" name="1061">
+        <fileTransfer accessType="SFTP" host="222.20.94.235" port="1061" sshConfigId="70be551c-32aa-42f7-94f8-58eb9b9d51e1" sshConfig="jfkuang@222.20.94.235:1061 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="6ba474d6-254e-4583-ad8b-e97c8d01501f" name="9999">
+        <fileTransfer accessType="SFTP" host="222.20.96.215" port="9999" sshConfigId="af136f90-0261-4c94-9c2d-669a0a15ea03" sshConfig="jfkuang@222.20.96.215:9999 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="fcaff66b-98b9-4888-a3f1-9c7a075d44b8" name="1062">
+        <fileTransfer accessType="SFTP" host="222.20.94.235" port="1062" sshConfigId="e768c873-bc99-4f28-86e7-9f7594f4cf03" sshConfig="jfkuang@222.20.94.235:1062 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="80a06f79-2564-414c-afa1-b59c04a316f1" name="1803 (project level)">
+        <fileTransfer accessType="SFTP" host="222.20.96.216" port="1803" sshConfigId="a210a797-b3a6-4edc-a806-707586b4c778" sshConfig="jfkuang@222.20.96.216:1803 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="1c7a2075-5843-4cb7-8f32-9c1c302358e5" name="3090">
+        <fileTransfer accessType="SFTP" host="123.125.240.158" port="22" sshConfigId="0a8c405a-93b3-4115-95c9-307d90416673" sshConfig="jfkuang@123.125.240.158:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

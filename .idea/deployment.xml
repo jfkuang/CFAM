@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
+    <serverData>
+      <paths name="1032">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/jfkuang/code/ie_e2e" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="1061">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/jfkuang/code/ie_e2e" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="1062">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/jfkuang/code/ie_e2e" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="1803">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/jfkuang/code/ie_e2e" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="3090">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/jfkuang/code/ie_e2e" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="9999">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/jfkuang/code/ie_e2e" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="jfkuang@222.20.94.235:1032 key">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="jfkuang@222.20.94.235:1032 key (1)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
