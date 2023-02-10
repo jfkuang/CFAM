@@ -12,8 +12,8 @@ from configs._base_.det_models.ocr_mask_rcnn_r50_fpn_ohem import model as det
 # for ocr tasks.
 
 _base_ = [
-    '../../../_base_/vie_datasets/nfv5_3125_ar_local_1032.py',
-    '../../../_base_/e2e_pipelines/vie_manner_pipeline_aug_720.py'
+    '../../_base_/vie_datasets/nfv5_3125_ar_local_1032.py',
+    '../../_base_/e2e_pipelines/vie_manner_pipeline_aug_720.py'
 ]
 
 det_module = det.copy()

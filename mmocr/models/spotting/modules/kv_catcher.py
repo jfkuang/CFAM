@@ -465,7 +465,7 @@ class OneStageContrast(nn.Module):
         # self.text = clip.tokenize(
         #     ["SS", "CE-PS", "CE-P1", "CE-D", "CE-PP", "TF-PS", "TF-P1", "TF-D", "TF-PP", "SO-PS", "SO-P1", "SO-D",
         #      "SO-PP", "CAR-PS", "CAR-P1", "CAR-D", "CAR-PP", "PRO-PS", "PRO-P1", "PRO-D", "PRO-PP", "Others"])
-    def forward(self, context_feature, texture_feature, shape, kvc_mask, training, context_encoder=False, texture_encoder=False, context_embedding=False, texture_embedding=False):
+    def forward(self, context_feature, texture_feature, seq_mask, shape, kvc_mask, training, context_encoder=False, texture_encoder=False, context_embedding=False, texture_embedding=False):
         """
         Build key-value relation between entity class embedding and instance-level feature
         Args:
@@ -486,8 +486,11 @@ class OneStageContrast(nn.Module):
         #texture_feature:(B*N,L,C)->(B,N,L,C)->(B,N,C)
         _, L, _ = texture_feature.shape
         texture_feature = texture_feature.reshape(B, N, L, C)
+        # BUG: this should be a masked mean
+        mask = seq_mask[:, :, :, 0].permute(1, 0, 2)
+        texture_feature = (texture_feature * mask.unsqueeze(-1)).sum(-2) / (mask.sum(-1).unsqueeze(-1) + 1e-5)
         # B,N,L,C->B,N,C
-        texture_feature = torch.mean(texture_feature, dim=-2)
+        # texture_feature = torch.mean(texture_feature, dim=-2)
         # norm
         texture_feature = texture_feature / texture_feature.norm(dim=1, keepdim=True)
 
@@ -525,15 +528,18 @@ class OneStageContrast(nn.Module):
         else:
             # use embedding加入parameter将初始化的entity变成可更新参数
             # B,cls->B,cls,C
+            # NOTE: the entity index can be not a parameter.
             entity_feature = self.cls_embedding(
                 nn.Parameter(torch.arange(0, cls_num, device=instance_feature.device).unsqueeze(0).expand(B, cls_num),
                          requires_grad=False))
+            # NOTE: a better normalization?
             entity_feature = entity_feature / entity_feature.norm(dim=1, keepdim=True)
             #B, cls, C->B, C, cls_num
             entity_feature = entity_feature.transpose(-1, -2)
 
             # try some encoder
             device = entity_feature.device
+            # NOTE: the linear should be defined in the `__init__`
             encoder = nn.Linear(N, cls_num).to(device)
             if context_embedding and not texture_embedding:
                 entity_feature = encoder(context_feature.reshape(B, C, -1))

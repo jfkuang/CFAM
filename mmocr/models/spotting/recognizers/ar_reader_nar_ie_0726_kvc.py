@@ -440,6 +440,8 @@ m
         # else:
         #     kie_query_logits = self.kie_embedding(gt_entities.reshape(-1, L))
         # put context-based attention after layout-based, to further utilize the layout info
+        # TODO: The context modeling seems a little strange.
+        # Modify it to the TextVQA-style context modeling.
         if self.use_context_node_attn and not self.context_inside:
             # L' = L - 1
             context_attn = self.context_fusion(query_seq[:, :-1, :], seq_mask, ins_mask, N,
@@ -713,13 +715,16 @@ m
                     #the type of encoder in kvc
                     # entity_logits :(B,N,cls)
                     if self.training and self.kvc_type != 'none':
-                        kvc_losses, entity_logits = self.kv_catcher(feature, x,
+                        # FIXME: 
+                        # 1. text feature should be masked average.
+                        # 2. Check the prediction of kie whether using the padded information.
+                        kvc_losses, entity_logits = self.kv_catcher(feature, x, seq_mask,
                                                     shape, kvc_mask, self.training,
                                                     self.kvc_context_encoder, self.kvc_texture_encoder,
                                                     self.kvc_context_embedding, self.kvc_texture_embedding)
                         logits.update(kvc_losses)
                     else:
-                        entity_logits = self.kv_catcher(feature, x,
+                        entity_logits = self.kv_catcher(feature, x, seq_mask,
                                                         shape, kvc_mask,
                                                         self.training, self.kvc_context_encoder,
                                                         self.kvc_texture_encoder, self.kvc_context_embedding,
